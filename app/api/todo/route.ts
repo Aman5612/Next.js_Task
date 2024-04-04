@@ -13,18 +13,16 @@ mongoose
 
 export async function GET(request: Request) {
   const taskList = await Task.find();
-  const tasks = taskList.map((task) => task.name);
-  return new Response(JSON.stringify({ tasks }));
+
+  return new Response(JSON.stringify({ taskList }));
 }
 
 export async function POST(request: Request) {
   try {
     const { task, index } = await request.json();
-    await Task.create({ index, name: task });
+    const value = await Task.create({ taskId: index, name: task });
     return new Response("Task created successfully", { status: 201 });
   } catch (error) {
     return new Response("Error creating task", { status: 500 });
   }
 }
-
-

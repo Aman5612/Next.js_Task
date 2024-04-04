@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 
+interface Task {
+  _id: string;
+  name: string;
+}
+
 export default function Home() {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [task, setTask] = useState<string>("");
 
   useEffect(() => {
@@ -13,22 +18,31 @@ export default function Home() {
   const fetchTasks = async () => {
     const response = await fetch("/api/todo");
     const tasksData = await response.json();
-    console.log(tasksData);
-    setTasks(tasksData.tasks);
+    console.log(tasksData.taskList);
+    setTasks(tasksData.taskList);
   };
 
   const addTask = async () => {
     await fetch("/api/todo", {
       method: "POST",
-      body: JSON.stringify({ task, index: tasks.length + 1 }),
+      body: JSON.stringify({ task }),
     });
-    setTasks([...tasks, task]);
     setTask("");
   };
 
-  const deleteTask = async (index: number) => {
-    await fetch(`/api/todo/${index}`, { method: "DELETE" });
-    await fetchTasks();
+  const deleteTask = async (id: string) => {
+    try {
+      const response = await fetch(`/api/todo/${id}`, { method: "DELETE" });
+      if (response.ok) {
+        console.log("Task deleted successfully");
+      } else {
+        console.error("Error deleting task:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    } finally {
+      fetchTasks();
+    }
   };
 
   return (
@@ -43,11 +57,11 @@ export default function Home() {
               className="flex justify-between items-center bg-gray-100 p-4 mb-2 rounded"
             >
               <span>
-                {index + 1}. {task}
+                {index + 1}. {task.name}
               </span>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={() => deleteTask(index)}
+                onClick={() => deleteTask(task._id)}
               >
                 Delete
               </button>

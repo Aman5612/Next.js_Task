@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema({
-  index: Number,
   name: String,
 });
 

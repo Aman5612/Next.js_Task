@@ -11,11 +11,15 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
+// interface Params {
+//   id: string;
+// }
+
 export async function DELETE(request: Request) {
   try {
-    const { index } = await request.json();
-    console.log(">>>>>>>>>>>>>>>.", index);
-    const taskToDelete = await Task.findOneAndDelete({ index });
+    const urlParts = request.url.split("/");
+    const id = urlParts.pop();
+    const taskToDelete = await Task.findOneAndDelete({ _id: id });
     if (!taskToDelete) {
       return new Response("Task not found", { status: 404 });
     }
