@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Task from "../../../taskModel";
+import Task from "../../../../taskModel";
 
 const MONGODB_URI =
   "mongodb+srv://aman5612:hUw42fXicveWNNc6@cluster0.cqhprto.mongodb.net/?retryWrites=true&w=majority";
